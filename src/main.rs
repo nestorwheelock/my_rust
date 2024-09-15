@@ -7,15 +7,31 @@ use ctrlc;
 use dirs;
 use clap::{Arg, Command};
 
-/// Struct to store project information.
+/// Struct representing information about a Rust project.
+///
+/// This struct holds the project's name, an optional description, and the path to the project.
 #[derive(Debug)]
 struct ProjectInfo {
+    /// The name of the project.
     name: String,
+    /// An optional description of the project.
     description: Option<String>,
+    /// The path where the project is located.
     path: PathBuf,
 }
 
-/// Parse the `Cargo.toml` file to extract project information.
+/// Parses a `Cargo.toml` file and extracts project information.
+///
+/// This function reads a `Cargo.toml` file from the specified path, extracts the package name
+/// and description (if available), and returns it as a `ProjectInfo` struct.
+///
+/// # Arguments
+///
+/// * `path` - The path to the `Cargo.toml` file.
+///
+/// # Returns
+///
+/// An `Option<ProjectInfo>` with the project name, description, and path.
 fn parse_cargo_toml(path: &Path) -> Option<ProjectInfo> {
     let cargo_toml = fs::read_to_string(path).ok()?;
     let parsed: Value = cargo_toml.parse().ok()?;
@@ -31,7 +47,18 @@ fn parse_cargo_toml(path: &Path) -> Option<ProjectInfo> {
     })
 }
 
-/// Recursively searches for Rust projects in the given directory.
+/// Recursively searches for Rust projects in the specified directory.
+///
+/// This function looks for directories containing `Cargo.toml` files within
+/// the given root directory and returns a map of project names to their respective `ProjectInfo`.
+///
+/// # Arguments
+///
+/// * `root` - The root directory to search for Rust projects.
+///
+/// # Returns
+///
+/// A `BTreeMap` where the keys are project names and the values are `ProjectInfo` structs.
 fn find_projects(root: &Path) -> BTreeMap<String, ProjectInfo> {
     let mut projects = BTreeMap::new();
     if let Ok(entries) = fs::read_dir(root) {
@@ -53,7 +80,15 @@ fn find_projects(root: &Path) -> BTreeMap<String, ProjectInfo> {
     projects
 }
 
-/// Displays the list of found projects and allows selection for details.
+/// Displays a list of found Rust projects and allows selection for more details.
+///
+/// This function lists all the projects found in the specified directory, displaying their
+/// index, name, and description. The user can then select a project by entering its index
+/// to view more detailed information.
+///
+/// # Arguments
+///
+/// * `projects` - A reference to a map of project names and their respective `ProjectInfo`.
 fn display_projects(projects: &BTreeMap<String, ProjectInfo>) {
     if projects.is_empty() {
         println!("No Rust projects found.");
@@ -91,7 +126,14 @@ fn display_projects(projects: &BTreeMap<String, ProjectInfo>) {
     }
 }
 
-/// Displays detailed information about a specific project.
+/// Displays detailed information about a specific Rust project.
+///
+/// This function prints the project name, description (if available), and path.
+/// It also provides the location where the compiled project can be run.
+///
+/// # Arguments
+///
+/// * `info` - A reference to the `ProjectInfo` struct for the selected project.
 fn display_project_details(info: &ProjectInfo) {
     println!("\nProject Details:");
     println!("Project Name: {}", info.name);
@@ -100,23 +142,12 @@ fn display_project_details(info: &ProjectInfo) {
     println!("You can run this project from: {:?}", info.path.join("target/release").to_str());
 }
 
-/// Prints the manual page explaining how to use the program.
-fn print_manual() {
-    println!("My Rust Manager v0.1.0");
-    println!();
-    println!("USAGE:");
-    println!("    my_rust [OPTIONS]");
-    println!();
-    println!("OPTIONS:");
-    println!("    --help      Prints this help manual page.");
-    println!("    --list      Lists all the Rust projects found in your '~/rust' directory.");
-    println!("    q           Quit the program.");
-    println!();
-    println!("EXAMPLES:");
-    println!("    my_rust --list         # Lists all available projects");
-}
-
-/// Main function to parse arguments and start the program.
+/// Main function to handle the execution of the program.
+///
+/// This function sets up the argument parsing, handles Ctrl+C interrupts, and
+/// defaults to listing projects if no arguments are passed. The available arguments are:
+/// - `--help`: Displays the help manual.
+/// - `--list`: Lists all available projects in the user's Rust projects directory.
 fn main() {
     // Handle Ctrl+C to exit the program
     ctrlc::set_handler(move || {
@@ -131,6 +162,7 @@ fn main() {
         .arg(Arg::new("help")
              .short('h')
              .long("help")
+             .action(clap::ArgAction::Help)
              .help("Displays the manual page"))
         .arg(Arg::new("list")
              .short('l')
@@ -138,13 +170,9 @@ fn main() {
              .help("Lists all available projects"))
         .get_matches();
 
-    // Parse arguments
-    if matches.contains_id("help") {
-        print_manual();
-        return;
-    }
-
-    if matches.contains_id("list") {
+    // Default to listing projects if no arguments are provided
+    if matches.contains_id("list") || !matches.args_present() {
+        // List projects by default, or explicitly if `--list` is passed
         let home_dir = dirs::home_dir().expect("Could not find home directory");
         let root_path = home_dir.join("rust");
 
@@ -155,8 +183,6 @@ fn main() {
 
         let projects = find_projects(&root_path);
         display_projects(&projects);
-    } else {
-        println!("Use '--list' to view available projects.");
     }
 }
 
