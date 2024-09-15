@@ -1,0 +1,13 @@
+/home/scc3235/rust/my_rust/target/debug/deps/libtoml-1ef757e3cdf30671.rmeta: /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/lib.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/map.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/value.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/datetime.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/ser.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/de.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/tokens.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/macros.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/spanned.rs
+
+/home/scc3235/rust/my_rust/target/debug/deps/toml-1ef757e3cdf30671.d: /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/lib.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/map.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/value.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/datetime.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/ser.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/de.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/tokens.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/macros.rs /home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/spanned.rs
+
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/lib.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/map.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/value.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/datetime.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/ser.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/de.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/tokens.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/macros.rs:
+/home/scc3235/.cargo/registry/src/index.crates.io-6f17d22bba15001f/toml-0.5.11/src/spanned.rs:

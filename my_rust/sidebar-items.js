@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["display_project_details","display_projects","find_projects","main","parse_cargo_toml"],"struct":["ProjectInfo"]};
