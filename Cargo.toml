@@ -1,6 +1,8 @@
 [package]
 name = "my_rust"
-description ="My rust manager.  Manual and manager of my rust projects"
+author = "Nestor Wheelock"
+license = "GNU GPLv3"
+description ="My rust manager.  usage: my_rust --list, --details"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,3 +10,4 @@ edition = "2021"
 toml = "0.5"
 ctrlc = "3.2"
 dirs = "4.0"
+clap = { version = "4.0", features = ["derive"] }

@@ -4,8 +4,10 @@ use std::io::{self, Write};
 use std::collections::BTreeMap;
 use toml::Value;
 use ctrlc;
-use dirs; // Add this crate for retrieving the home directory
+use dirs;
+use clap::{Arg, Command};
 
+/// Struct to store project information.
 #[derive(Debug)]
 struct ProjectInfo {
     name: String,
@@ -13,6 +15,7 @@ struct ProjectInfo {
     path: PathBuf,
 }
 
+/// Parse the `Cargo.toml` file to extract project information.
 fn parse_cargo_toml(path: &Path) -> Option<ProjectInfo> {
     let cargo_toml = fs::read_to_string(path).ok()?;
     let parsed: Value = cargo_toml.parse().ok()?;
@@ -28,6 +31,7 @@ fn parse_cargo_toml(path: &Path) -> Option<ProjectInfo> {
     })
 }
 
+/// Recursively searches for Rust projects in the given directory.
 fn find_projects(root: &Path) -> BTreeMap<String, ProjectInfo> {
     let mut projects = BTreeMap::new();
     if let Ok(entries) = fs::read_dir(root) {
@@ -49,6 +53,7 @@ fn find_projects(root: &Path) -> BTreeMap<String, ProjectInfo> {
     projects
 }
 
+/// Displays the list of found projects and allows selection for details.
 fn display_projects(projects: &BTreeMap<String, ProjectInfo>) {
     if projects.is_empty() {
         println!("No Rust projects found.");
@@ -58,43 +63,10 @@ fn display_projects(projects: &BTreeMap<String, ProjectInfo>) {
     for (index, (name, info)) in projects.iter().enumerate() {
         println!("{}. {} - {}", index + 1, name, info.description.as_deref().unwrap_or("No description"));
     }
-}
 
-fn display_project_details(info: &ProjectInfo) {
-    println!("Project Name: {}", info.name);
-    println!("Description: {}", info.description.as_deref().unwrap_or("No description"));
-    println!("Path: {:?}", info.path);
-    println!("You can run this project from: {:?}", info.path.join("target/release").to_str());
-}
-
-fn main() {
-    // Handle Ctrl+C to exit the program
-    ctrlc::set_handler(move || {
-        println!("\nProgram interrupted. Exiting...");
-        std::process::exit(0);
-    }).expect("Error setting Ctrl+C handler");
-
-    // Get the home directory and append 'rust' to it
-    let home_dir = dirs::home_dir().expect("Could not find home directory");
-    let root_path = home_dir.join("rust");
-
-    // Check if the 'rust' directory exists
-    if !root_path.exists() {
-        println!("sorry you don't have any rusts");
-        return;
-    }
-
-    let projects = find_projects(&root_path);
-
-    if projects.is_empty() {
-        println!("No projects found in the specified directory.");
-        return;
-    }
+    println!("Enter the number of the project to view details, or 'q' to quit:");
 
     loop {
-        display_projects(&projects);
-
-        println!("Enter the number of the project to view details, or 'q' to quit:");
         print!("> ");
         io::stdout().flush().expect("Failed to flush stdout");
 
@@ -111,11 +83,80 @@ fn main() {
             if let Some((_, info)) = projects.iter().nth(index - 1) {
                 display_project_details(info);
             } else {
-                println!("Invalid selection.");
+                println!("Invalid selection. Please enter a valid project number.");
             }
         } else {
             println!("Please enter a valid number or 'q' to quit.");
         }
     }
-}  // <- Closing brace for main function
+}
+
+/// Displays detailed information about a specific project.
+fn display_project_details(info: &ProjectInfo) {
+    println!("\nProject Details:");
+    println!("Project Name: {}", info.name);
+    println!("Description: {}", info.description.as_deref().unwrap_or("No description"));
+    println!("Path: {:?}", info.path);
+    println!("You can run this project from: {:?}", info.path.join("target/release").to_str());
+}
+
+/// Prints the manual page explaining how to use the program.
+fn print_manual() {
+    println!("My Rust Manager v0.1.0");
+    println!();
+    println!("USAGE:");
+    println!("    my_rust [OPTIONS]");
+    println!();
+    println!("OPTIONS:");
+    println!("    --help      Prints this help manual page.");
+    println!("    --list      Lists all the Rust projects found in your '~/rust' directory.");
+    println!("    q           Quit the program.");
+    println!();
+    println!("EXAMPLES:");
+    println!("    my_rust --list         # Lists all available projects");
+}
+
+/// Main function to parse arguments and start the program.
+fn main() {
+    // Handle Ctrl+C to exit the program
+    ctrlc::set_handler(move || {
+        println!("\nProgram interrupted. Exiting...");
+        std::process::exit(0);
+    }).expect("Error setting Ctrl+C handler");
+
+    let matches = Command::new("My Rust Manager")
+        .version("0.1.0")
+        .author("Your Name <you@example.com>")
+        .about("A manual and manager of my Rust projects")
+        .arg(Arg::new("help")
+             .short('h')
+             .long("help")
+             .help("Displays the manual page"))
+        .arg(Arg::new("list")
+             .short('l')
+             .long("list")
+             .help("Lists all available projects"))
+        .get_matches();
+
+    // Parse arguments
+    if matches.contains_id("help") {
+        print_manual();
+        return;
+    }
+
+    if matches.contains_id("list") {
+        let home_dir = dirs::home_dir().expect("Could not find home directory");
+        let root_path = home_dir.join("rust");
+
+        if !root_path.exists() {
+            println!("Sorry, no Rust projects found.");
+            return;
+        }
+
+        let projects = find_projects(&root_path);
+        display_projects(&projects);
+    } else {
+        println!("Use '--list' to view available projects.");
+    }
+}
 
